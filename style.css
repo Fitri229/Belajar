@@ -1,0 +1,13 @@
+body {
+  background-image: linear-gradient(rgb(160, 164, 177), rgb(109, 191, 202));
+}
+
+table {
+    background-color: aliceblue;
+    border-radius: 20px;
+    text-indent: 50px;
+   white-space: nowrap;
+   align-items: center;
+   width: 30%;
+   height: 50%;
+}

@@ -1,5 +1,7 @@
 
 
+//LAPRAK MATDIS PERTEMUAN 9
+
 #include <iostream>
 #include <conio.h>
 #include <cstdlib> 
@@ -19,7 +21,7 @@ int faktorial(int nilai) {
 
 int main() {
     int p, nq, max, x, i, j, n, k, r, s, tr, no;
-    char a[100];
+    int a[100];
     div_t xx;
 
     // Inisialisasi array a
@@ -54,43 +56,18 @@ int main() {
     cout << "nilai permutasi : " << max << endl;
     getch();
 	
+	cout << "\nTekan enter untuk melihat hasil generate permutasi...\n";
+	getch();
 	
-    cout << "\nTekan enter untuk melihat hasil generate permutasi...\n";
-    getch();
-
-    no = 1;
-
-    // generate permutasi
-    for (int x = 1; x <= max; x++) {
-        cout << no << ". ";
-        for (int i = 1; i <= tr; i++) {
-            cout << a[i] << " "; 
-        }
-        cout << endl;
-        no++;
-
-        j = n - 1;
-        while (a[j] > a[j + 1]) j--;
-
-        k = n;
-        while (a[j] > a[k]) k--;
-
-        // tukar a[j] dan a[k] 
-        char temp = a[k];
-        a[k] = a[j];
-        a[j] = temp;
-
-        r = j + 1;
-        s = n;
-        while (r < s) {
-            char tmp = a[r];
-            a[r] = a[s];
-            a[s] = tmp;
-            r++;
-            s--;
-        }
-    }
-
+	for(int i=1; i<=max; i++){
+		cout << i <<". " << a[1];
+		for(int j=1; j<= tr; j++){
+			cout<< " "<<a[(i+1)-j];
+		}
+		cout<<endl;
+	} 
+    
     return 0;
 }
+
 

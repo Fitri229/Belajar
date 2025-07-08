@@ -1,0 +1,324 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+using namespace std;
+
+const int MAX_BARANG = 100;
+
+class Barang {
+public:
+    string kode;
+    string nama;
+    float harga;
+    int stok;
+    int jumlah_dibeli;
+
+    void input() {
+        cout << "Kode Produk   : "; 
+        cin >> kode;  
+        cout << "Nama Produk   : "; 
+        cin.ignore(); 
+        getline(cin, nama); 
+        cout << "Harga         : "; cin >> harga;
+        cout << "Jumlah Stok   : "; cin >> stok;
+        jumlah_dibeli = 0;
+    }
+
+    void tampil() {
+        cout << left << setw(10) << kode
+             << setw(20) << nama
+             << setw(10) << harga
+             << setw(8) << stok
+             << setw(12) << jumlah_dibeli << "\t"
+             << setw(20) <<harga * jumlah_dibeli
+             << endl;
+    }
+};
+
+class Jualan {
+private:
+    Barang data[MAX_BARANG];
+    int jumlah;
+
+public:
+    Jualan() { jumlah = 0; }
+
+    void tambahBarang() {
+        if (jumlah >= MAX_BARANG) {
+            cout << "Kapasitas penuh!\n";
+            return;
+        }
+        cout << "\nMasukkan data barang ke-" << jumlah + 1 << ":\n";
+        data[jumlah].input();
+        jumlah++;
+    }
+
+    void tampilSemua() {
+        if (jumlah == 0) {
+            cout << "Belum ada data barang.\n";
+            return;
+        }
+
+        cout << "\n \t\t\t========== DAFTAR BARANG ==========\n";
+        cout << left << setw(10) << "Kode"
+             << setw(20) << "Nama"
+             << setw(10) << "Harga"
+             << setw(8) << "Stok"
+             << setw(12) << "Jumlah Beli"
+             << setw(20) << "\tTotal Pendapatan"
+             << endl;
+        cout << "----------------------------------------------------------------------------------\n";
+
+        for (int i = 0; i < jumlah; i++) {
+            data[i].tampil();
+        }
+    }
+
+    void cariKode() {
+        cout << "Masukkan kode barang yang dicari: ";
+        string kodeCari;
+        cin >> kodeCari;
+
+        bool ketemu = false;
+        for (int i = 0; i < jumlah; i++) {
+            if (data[i].kode == kodeCari) {
+                cout << "Barang ditemukan:\n";
+                cout << left << setw(10) << "Kode"
+                     << setw(20) << "Nama"
+                     << setw(10) << "Harga"
+                     << setw(8) << "Stok"
+                     << setw(12) << "Jumlah Beli"
+                     << setw(15) << "Total Pendapatan"
+                     << endl;
+                data[i].tampil();
+                ketemu = true;
+                break;
+            }
+        }
+        if (!ketemu) {
+            cout << "Barang dengan kode " << kodeCari << " tidak ditemukan.\n";
+        }
+    }
+
+    void cariHargaTermurah() {
+        if (jumlah == 0) {
+            cout << "Data barang kosong.\n";
+            return;
+        }
+
+        float hargaTermurah = data[0].harga;
+        for (int i = 1; i < jumlah; i++) {
+            if (data[i].harga < hargaTermurah) hargaTermurah = data[i].harga;
+        }
+
+        cout << "\nBarang dengan harga termurah (" << hargaTermurah << "):\n";
+        cout << left << setw(10) << "Kode"
+             << setw(20) << "Nama"
+             << setw(10) << "Harga"
+             << setw(8) << "Stok"
+             << setw(12) << "Jumlah Beli"
+             << setw(15) << "Total Pendapatan"
+             << endl;
+
+        for (int i = 0; i < jumlah; i++) {
+            if (data[i].harga == hargaTermurah) {
+                data[i].tampil();
+            }
+        }
+    }
+
+    void urutkanTermurah() {
+        for (int i = 0; i < jumlah - 1; i++) {
+            for (int j = i + 1; j < jumlah; j++) {
+                if (data[i].harga > data[j].harga) {
+                    Barang temp = data[i];
+                    data[i] = data[j];
+                    data[j] = temp;
+                }
+            }
+        }
+        cout << "Barang diurutkan dari harga termurah ke termahal.\n";
+    }
+
+    void urutkanTermahal() {
+        for (int i = 0; i < jumlah - 1; i++) {
+            for (int j = i + 1; j < jumlah; j++) {
+                if (data[i].harga < data[j].harga) {
+                    Barang temp = data[i];
+                    data[i] = data[j];
+                    data[j] = temp;
+                }
+            }
+        }
+        cout << "Barang diurutkan dari harga termahal ke termurah.\n";
+    }
+
+    void perbaruiBarang() {
+        cout << "Masukkan nama barang yang ingin diperbarui: ";
+        cin.ignore();
+        string namaCari;
+        getline(cin, namaCari);
+
+        for (int i = 0; i < jumlah; i++) {
+            if (data[i].nama == namaCari) {
+                cout << "Masukkan data baru untuk barang \"" << namaCari << "\":\n";
+                data[i].input();
+                return;
+            }
+        }
+        cout << "Barang dengan nama \"" << namaCari << "\" tidak ditemukan.\n";
+    }
+
+    void hapusBarang() {
+        cout << "Masukkan nama barang yang ingin dihapus: ";
+        cin.ignore();
+        string namaCari;
+        getline(cin, namaCari);
+
+        for (int i = 0; i < jumlah; i++) {
+            if (data[i].nama == namaCari) {
+                for (int j = i; j < jumlah - 1; j++) {
+                    data[j] = data[j + 1];
+                }
+                jumlah--;
+                cout << "Barang \"" << namaCari << "\" berhasil dihapus.\n";
+                return;
+            }
+        }
+        cout << "Barang dengan nama \"" << namaCari << "\" tidak ditemukan.\n";
+    }
+
+    void beliBarang() {
+        if (jumlah == 0) {
+            cout << "Belum ada barang untuk dibeli.\n";
+            return;
+        }
+        cout << "Masukkan kode barang yang ingin dibeli: ";
+        string kodeBeli;
+        cin >> kodeBeli;
+
+        int idx = -1;
+        for (int i = 0; i < jumlah; i++) {
+            if (data[i].kode == kodeBeli) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx == -1) {
+            cout << "Barang dengan kode " << kodeBeli << " tidak ditemukan.\n";
+            return;
+        }
+
+        cout << "Stok barang " << data[idx].nama << " = " << data[idx].stok << endl;
+        cout << "Masukkan jumlah yang ingin dibeli: ";
+        int jumlahBeli;
+        cin >> jumlahBeli;
+
+        if (jumlahBeli <= 0) {
+            cout << "Jumlah pembelian harus lebih dari 0.\n";
+            return;
+        }
+        if (jumlahBeli > data[idx].stok) {
+            cout << "Stok tidak cukup. Stok tersedia hanya " << data[idx].stok << ".\n";
+            return;
+        }
+
+        data[idx].stok -= jumlahBeli;
+        data[idx].jumlah_dibeli += jumlahBeli;
+        cout << "Pembelian berhasil. Total bayar: " << data[idx].harga * jumlahBeli << endl;
+    }
+    
+    void simpanLaporan() {
+        ofstream file("hasil_sort_penjualan.txt");
+        if (!file) {
+            cout << "Gagal menyimpan laporan.\n";
+            return;
+        }
+
+        file << left << setw(10) << "Kode"
+             << setw(20) << "Nama"
+             << setw(10) << "Jumlah"
+             << setw(10) << "Harga"
+             << setw(15) << "Total Pendapatan"
+             << "\n";
+
+        float total = 0;
+        for (int i = 0; i < jumlah; i++) {
+            file << left << setw(10) << data[i].kode
+                 << setw(20) << data[i].nama
+                 << setw(10) << data[i].jumlah_dibeli
+                 << setw(10) << data[i].harga
+                 << setw(15) << data[i].harga * data[i].jumlah_dibeli
+                 << "\n";
+            total += data[i].harga * data[i].jumlah_dibeli;
+        }
+        file << "\nTOTAL PENDAPATAN: " << total << "\n";
+
+        file.close();
+        cout << "Laporan berhasil disimpan ke file 'hasil_sort_penjualan.txt'.\n";
+    }
+};
+
+int main() {
+    Jualan toko;
+    int pilihan;
+
+    do {
+        cout << "\n=== MENU PENJUALAN TOKO PAYUNG HUJAN ===\n";
+        cout << "1. Tambah Barang\n";
+        cout << "2. Tampilkan Semua Barang\n";
+        cout << "3. Cari Barang Berdasarkan Kode\n";
+        cout << "4. Cari Barang dengan Harga Termurah\n";
+        cout << "5. Urutkan Barang Termurah -> Termahal\n";
+        cout << "6. Urutkan Barang Termahal -> Termurah\n";
+        cout << "7. Perbarui Data Barang\n";
+        cout << "8. Hapus Barang\n";
+        cout << "9. Pembelian Barang\n";
+        cout << "10. Simpan Laporan ke File\n"; 
+        cout << "0. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+        case 1:
+            toko.tambahBarang();
+            break;
+        case 2:
+            toko.tampilSemua();
+            break;
+        case 3:
+            toko.cariKode();
+            break;
+        case 4:
+            toko.cariHargaTermurah();
+            break;
+        case 5:
+            toko.urutkanTermurah();
+            break;
+        case 6:
+            toko.urutkanTermahal();
+            break;
+        case 7:
+            toko.perbaruiBarang();
+            break;
+        case 8:
+            toko.hapusBarang();
+            break;
+        case 9:
+            toko.beliBarang();
+            break;
+        case 10:
+            toko.simpanLaporan();
+            break;
+        case 0:
+            cout << "Terima kasih! Program selesai.\n";
+            break;
+        default:
+            cout << "Pilihan tidak valid. Coba lagi.\n";
+        }
+
+    } while (pilihan != 0);
+
+    return 0;
+}
